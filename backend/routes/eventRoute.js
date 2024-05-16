@@ -1,5 +1,6 @@
 import express from 'express';
 import Event from '../models/event.model.js';
+import User from '../models/user.model.js';
 
 const router = express.Router();
 
@@ -60,6 +61,51 @@ router.get('/:id', async (request, response) => {
         const event = await Event.findById(id);
 
         return response.status(200).json(event);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
+//Get all Users in an Event
+router.get('/:id/participants', async (request, response) => {
+    try {
+        const { id } = request.params;
+
+        const event = await Event.findById(id).populate('users');
+
+        return response.status(200).json(event.users);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
+// Add User to Event
+router.post('/:id/participants/:userId', async (request, response) => {
+    try {
+        const { id } = request.params;
+        const { userId } = request.params;
+
+        const event = await Event.findById(id);
+        const user = await User.findById(userId);
+
+        if (!event) {
+            return response.status(404).send({ message: 'Event not found' });
+        }
+
+        if (!user) {
+            return response.status(404).send({ message: 'User not found' });
+        }
+
+        if (event.participants.includes(userId) || event.organizer === userId) {
+            return response.status(400).send({ message: 'User already participates in event' });
+        }
+
+        event.participants.push(userId);
+        await event.save();
+
+        return response.status(200).send(event);
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
