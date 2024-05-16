@@ -1,19 +1,123 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { Form, NavLink, useActionData, redirect } from 'react-router-dom'
 import AnimatedLayout from './AnimatedLayout'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { useState } from 'react'
+import Datepicker from "tailwind-datepicker-react"
+import { useNavigation } from 'react-router-dom'
+
+const options = {
+    inputNameProp: 'birthday',
+}
 
 function Registration() {
+    const data = useActionData();
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === 'submitting';
+
+    const [show, setShow] = useState(false)
+    const handleChange = (selectedDate) => {
+        console.log(selectedDate)
+    }
+    const handleClose = (state) => {
+        setShow(state)
+    }
     return (
         <AnimatedLayout>
-            <div>Registration</div>
-            <NavLink
-                className='bg-blue-400'
-                to='/'
-            >
-                Home
-            </NavLink>
+            <section className='flex flex-1 p-8 flex-col'>
+                <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                    <span className='text-2xl'>Back to Events</span>
+                </NavLink>
+                <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-full w-2/5 min-w-72">
+
+                    <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                        <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                                Register for an Event
+                            </h1>
+                            <Form method='post' className="space-y-4 md:space-y-6" action="#">
+                                <div>
+                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
+                                    <input type="text" name="name" id="name" placeholder="Max Loshak" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" />
+                                </div>
+                                <div>
+                                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+                                    <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name.surname@gamil.com" required="" />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="birthday" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your birth date</label>
+                                    <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+                                </div>
+
+                                <div className="flex items-start">
+                                    <div className="flex items-center h-5">
+                                        <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="" />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">I accept the <a className="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">Terms and Conditions</a></label>
+                                    </div>
+                                </div>
+                                <button className="w-full text-white bg-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create an account</button>
+                            </Form>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </AnimatedLayout>
     )
 }
 
 export default Registration
+
+export async function action({ request, params }) {
+
+    const data = await request.formData();
+    let authData = {};
+
+    authData = {
+        fullName: data.get('name'),
+        email: data.get('email'),
+        dateOfBirth: data.get('birthday'),
+    };
+
+    console.log(authData);
+
+    const responseCreateUser = await fetch('http://localhost:5000/users', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(authData),
+    });
+
+    if (responseCreateUser.status === 422 || responseCreateUser.status === 401) {
+        return responseCreateUser;
+    }
+
+    if (!responseCreateUser.ok) {
+        throw json({ message: 'Could not register participant.' }, { status: 500 });
+    }
+
+    const resData = await responseCreateUser.json();
+    const userId = resData._id;
+
+    const responseAddParticipant = await fetch(`http://localhost:5000/events/${params.id}/participants/${userId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (responseAddParticipant.status === 422 || responseAddParticipant.status === 401) {
+        return responseAddParticipant;
+    }
+
+    if (!responseAddParticipant.ok) {
+        throw json({ message: 'Could not add participant to event.' }, { status: 500 });
+    }
+
+    return redirect('/');
+}

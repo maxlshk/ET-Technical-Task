@@ -3,7 +3,7 @@ import RootLayout from './pages/RootLayout';
 import ErrorPage from './pages/ErrorPage';
 import HomePage, { loader as eventsLoader } from './pages/HomePage';
 import EventPage, { loader as participantsLoader } from './pages/EventPage';
-import Registration from './pages/Registration';
+import Registration, { action as registerAction } from './pages/Registration';
 
 
 function App() {
@@ -31,8 +31,8 @@ function App() {
             },
             {
               path: 'registration',
-              element: <Registration />
-              // action: registerAction,
+              element: <Registration />,
+              action: registerAction,
             }
           ]
         },

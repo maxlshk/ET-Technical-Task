@@ -20,7 +20,7 @@ function EventPage() {
         <AnimatedLayout>
             <div className='p-8'>
                 <div className='flex justify-between'>
-                    <NavLink to='/' className='inline-flex items-center gap-x-3 text-blue-500'>
+                    <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
                         <FontAwesomeIcon icon={faChevronLeft} />
                         <span className='text-2xl'>Back to Events</span>
                     </NavLink>
