@@ -9,26 +9,10 @@ function RootLayout() {
         const element = useOutlet();
 
         return (
-            <>
+            <AnimatePresence mode="wait" initial={true}>
                 {element && React.cloneElement(element, { key: location.pathname })}
-            </>
+            </AnimatePresence>
         );
-    };
-
-
-    const pageVariants = {
-        initial: {
-            opacity: 0,
-            x: '100%',
-        },
-        in: {
-            opacity: 1,
-            x: 0,
-        },
-        out: {
-            opacity: 0,
-            x: '-100%',
-        }
     };
 
     return (
@@ -41,19 +25,7 @@ function RootLayout() {
                     </div>
                 </div>
                 <main className='flex flex-1 overflow-hidden'>
-                    <AnimatePresence mode='wait' initial={true}>
-                        <motion.div
-                            key={location.pathname}
-                            variants={pageVariants}
-                            initial="initial"
-                            animate="in"
-                            exit="out"
-                            transition={{ type: 'tween', duration: 0.3 }}
-                            className='flex flex-1'
-                        >
-                            <AnimatedOutlet />
-                        </motion.div>
-                    </AnimatePresence>
+                    <AnimatedOutlet />
                 </main>
                 <div className="fixed inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-40rem)]" aria-hidden="true">
                     <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-purple-400 via-[#2bb3d3] to-purple-400 opacity-60 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem] bg-[length:300%_auto] animate-blobs"

@@ -2,18 +2,22 @@ import React from 'react'
 import { Suspense } from 'react';
 import { useLoaderData, json, defer, Await } from 'react-router-dom';
 import EventsList from '../components/EventsList';
+import AnimatedLayout from './AnimatedLayout';
 
 function HomePage() {
     const { events } = useLoaderData();
 
     return (
-        <>
-            <div></div>
-            <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
-                <Await resolve={events}>
-                    {(loadedEvents) => <EventsList events={loadedEvents} />}
-                </Await>
-            </Suspense></>
+        <AnimatedLayout>
+            <div className='p-8'>
+                <div className='font-bold text-3xl'>Events</div>
+                <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
+                    <Await resolve={events}>
+                        {(loadedEvents) => <EventsList events={loadedEvents} />}
+                    </Await>
+                </Suspense>
+            </div>
+        </AnimatedLayout>
     )
 }
 

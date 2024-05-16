@@ -72,14 +72,32 @@ router.get('/:id/participants', async (request, response) => {
     try {
         const { id } = request.params;
 
-        const event = await Event.findById(id).populate('users');
+        const event = await Event.findById(id);
 
-        return response.status(200).json(event.users);
+        if (!event) {
+            return response.status(404).send({ message: 'Event not found' });
+        }
+
+        const participantsIds = event.participants;
+        const organizerId = event.organizer;
+
+        const participants = await Promise.all(
+            participantsIds.map(participantId => User.findById(participantId))
+        );
+
+        const organizer = await User.findById(organizerId);
+        participants.unshift(organizer);
+
+        const validParticipants = participants.filter(user => user !== null);
+
+        return response.status(200).json(validParticipants);
+
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
     }
 });
+
 
 // Add User to Event
 router.post('/:id/participants/:userId', async (request, response) => {
