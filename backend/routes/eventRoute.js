@@ -6,44 +6,46 @@ const router = express.Router();
 
 const schema = Event.schema.obj;
 
-const sources = ['Social Media', 'Friends', 'Found Myself'];
-function getRandomFutureDate() {
-    const today = new Date();
-    const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+// Route for the pre-population of the database with events and participants
 
-    const diffTime = nextYear.getTime() - today.getTime() + 1;
-    const randomTime = today.getTime() + Math.random() * diffTime;
+// const sources = ['Social Media', 'Friends', 'Found Myself'];
+// function getRandomFutureDate() {
+//     const today = new Date();
+//     const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
 
-    return new Date(randomTime);
-}
+//     const diffTime = nextYear.getTime() - today.getTime() + 1;
+//     const randomTime = today.getTime() + Math.random() * diffTime;
 
-router.post('/createevents', async (request, response) => {
+//     return new Date(randomTime);
+// }
 
-    try {
-        const eventPromises = Array.from({ length: 80 }, (v, i) => {
-            return Event.create({
-                title: `Event ${i + 1}`,
-                description: `Description of Event ${i + 1} Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum vel consequuntur animi impedit possimus temporibus provident est in dolorum doloremque dolore reprehenderit ipsa voluptate laborum voluptas suscipit sit iste fuga quaerat.`,
-                date: getRandomFutureDate(),
-                organizer: `Organizer ${i + 1}`,
-                participants: Array.from({ length: 10 }, (v, j) => ({
-                    fullName: `User ${i * 10 + j + 1}`,
-                    email: `user${i * 10 + j + 1}@gmail.com`,
-                    dateOfBirth: new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
-                    referralSource: sources[j % 3]
-                }))
-            });
-        });
+// router.post('/createevents', async (request, response) => {
 
-        await Promise.all(eventPromises);
+//     try {
+//         const eventPromises = Array.from({ length: 80 }, (v, i) => {
+//             return Event.create({
+//                 title: `Event ${i + 1}`,
+//                 description: `Description of Event ${i + 1} Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum vel consequuntur animi impedit possimus temporibus provident est in dolorum doloremque dolore reprehenderit ipsa voluptate laborum voluptas suscipit sit iste fuga quaerat.`,
+//                 date: getRandomFutureDate(),
+//                 organizer: `Organizer ${i + 1}`,
+//                 participants: Array.from({ length: 10 }, (v, j) => ({
+//                     fullName: `User ${i * 10 + j + 1}`,
+//                     email: `user${i * 10 + j + 1}@gmail.com`,
+//                     dateOfBirth: new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
+//                     referralSource: sources[j % 3]
+//                 }))
+//             });
+//         });
 
-        return response.status(201).send({ message: 'Events created' });
+//         await Promise.all(eventPromises);
 
-    } catch (error) {
-        console.log(error.message);
-        response.status(500).send({ message: error.message });
-    }
-});
+//         return response.status(201).send({ message: 'Events created' });
+
+//     } catch (error) {
+//         console.log(error.message);
+//         response.status(500).send({ message: error.message });
+//     }
+// });
 
 // Create Event
 router.post('/', async (request, response) => {

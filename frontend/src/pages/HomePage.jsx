@@ -32,9 +32,19 @@ function HomePage() {
     };
 
     const onSort = (option) => {
-        const sort = option.value.toLowerCase();
-        setSort(sort);
-        navigate(`/?sort=${sort}&order=${currentOrder}&page=${page}`);
+        const sortValue = option.value.toLowerCase();
+        if (sort === sortValue) {
+            if (currentOrder === 'asc') {
+                navigate(`/?sort=${sortValue}&order=desc&page=${page}`);
+                return;
+            }
+            else {
+                navigate(`/?sort=${sortValue}&order=asc&page=${page}`);
+                return;
+            }
+        }
+        setSort(sortValue);
+        navigate(`/?sort=${sortValue}&order=${currentOrder}&page=${page}`);
     }
 
     return (
@@ -45,7 +55,7 @@ function HomePage() {
                 <Dropdown
                     options={options}
                     onChange={onSort}
-                    value={`Sort by ${sort}`}
+                    value={`Sort by ${sort} (${currentOrder})`}
                 />
             </div>
             <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
