@@ -75,7 +75,7 @@ function Registration() {
                                     disabled={dateError}
                                     className="w-full text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cayan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Create an account
+                                    Register for event
                                 </button>
                             </Form>
                         </div>
@@ -106,7 +106,7 @@ export async function action({ request, params }) {
 
     console.log(authData);
 
-    const responseCreateUser = await fetch('http://localhost:5000/users', {
+    const responseCreateUser = await fetch(`http://localhost:5000/events/${params.id}/participants`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -120,24 +120,6 @@ export async function action({ request, params }) {
 
     if (!responseCreateUser.ok) {
         throw json({ message: 'Could not register participant.' }, { status: 500 });
-    }
-
-    const resData = await responseCreateUser.json();
-    const userId = resData._id;
-
-    const responseAddParticipant = await fetch(`http://localhost:5000/events/${params.id}/participants/${userId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    if (responseAddParticipant.status === 422 || responseAddParticipant.status === 401) {
-        return responseAddParticipant;
-    }
-
-    if (!responseAddParticipant.ok) {
-        throw json({ message: 'Could not add participant to event.' }, { status: 500 });
     }
 
     return redirect('/');

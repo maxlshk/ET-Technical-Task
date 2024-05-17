@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import userSchema from "./user.model.js";
 
 const eventSchema = new mongoose.Schema({
     title: {
@@ -19,16 +20,10 @@ const eventSchema = new mongoose.Schema({
         min: [new Date(), 'Event date cannot be in the past']
     },
     organizer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: String,
         required: [true, 'An organizer is required']
     },
-    participants: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
-        },
-    ],
+    participants: [userSchema]
 });
 
 const Event = mongoose.model("Event", eventSchema);

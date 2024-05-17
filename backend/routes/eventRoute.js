@@ -19,24 +19,19 @@ function getRandomFutureDate() {
 
 router.post('/createevents', async (request, response) => {
 
-    const usersData = Array.from({ length: 880 }, (v, i) => ({
-        fullName: `User ${i + 1}`,
-        email: `user${i + 1}@gmail.com`,
-        dateOfBirth: new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
-        referralSource: sources[i % 3]
-    }));
-
     try {
-        const createdUsers = await User.insertMany(usersData);
-        const userIds = createdUsers.map(user => user._id);
-
         const eventPromises = Array.from({ length: 80 }, (v, i) => {
             return Event.create({
                 title: `Event ${i + 1}`,
-                description: `Description of Event ${i + 1} Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum vel consequuntur animi impedit possimus temporibus provident est in dolorum doloremque dolore reprehenderit ipsa voluptate laborum voluptas suscipit sit iste fuga quaerat, voluptates inventore perferendis. Sunt distinctio perferendis unde. Qui obcaecati saepe deleniti itaque, ex corporis et quos, nulla vitae corrupti?`,
+                description: `Description of Event ${i + 1} Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum vel consequuntur animi impedit possimus temporibus provident est in dolorum doloremque dolore reprehenderit ipsa voluptate laborum voluptas suscipit sit iste fuga quaerat.`,
                 date: getRandomFutureDate(),
-                organizer: userIds[i],
-                participants: userIds.slice((i + 1) * 10, (i + 2) * 10)
+                organizer: `Organizer ${i + 1}`,
+                participants: Array.from({ length: 10 }, (v, j) => ({
+                    fullName: `User ${i * 10 + j + 1}`,
+                    email: `user${i * 10 + j + 1}@gmail.com`,
+                    dateOfBirth: new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
+                    referralSource: sources[j % 3]
+                }))
             });
         });
 
@@ -136,26 +131,22 @@ router.get('/:id', async (request, response) => {
 router.get('/:id/participants', async (request, response) => {
     try {
         const { id } = request.params;
+        const searchQuery = request.query.search;
 
         const event = await Event.findById(id);
-
         if (!event) {
             return response.status(404).send({ message: 'Event not found' });
         }
 
-        const participantsIds = event.participants;
-        const organizerId = event.organizer;
+        let participants = event.participants;
+        if (searchQuery) {
+            participants = participants.filter(participant =>
+                participant.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                participant.email.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
 
-        const participants = await Promise.all(
-            participantsIds.map(participantId => User.findById(participantId))
-        );
-
-        const organizer = await User.findById(organizerId);
-        participants.unshift(organizer);
-
-        const validParticipants = participants.filter(user => user !== null);
-
-        return response.status(200).json(validParticipants);
+        return response.status(200).json(participants);
 
     } catch (error) {
         console.log(error.message);
@@ -165,34 +156,31 @@ router.get('/:id/participants', async (request, response) => {
 
 
 // Add User to Event
-router.post('/:id/participants/:userId', async (request, response) => {
+router.post('/:id/participants', async (request, response) => {
     try {
         const { id } = request.params;
-        const { userId } = request.params;
+        const userData = request.body;
 
         const event = await Event.findById(id);
-        const user = await User.findById(userId);
-
         if (!event) {
             return response.status(404).send({ message: 'Event not found' });
         }
 
-        if (!user) {
-            return response.status(404).send({ message: 'User not found' });
-        }
-
-        if (event.participants.includes(userId) || event.organizer === userId) {
+        const isAlreadyParticipant = event.participants.some(participant => participant.email === userData.email);
+        if (isAlreadyParticipant) {
             return response.status(400).send({ message: 'User already participates in event' });
         }
 
-        event.participants.push(userId);
+        event.participants.push(userData);
         await event.save();
 
         return response.status(200).send(event);
+
     } catch (error) {
         console.log(error.message);
         response.status(500).send({ message: error.message });
     }
 });
+
 
 export default router;

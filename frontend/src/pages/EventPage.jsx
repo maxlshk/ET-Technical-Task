@@ -17,20 +17,20 @@ function EventPage() {
     const { event, participants } = useLoaderData();
 
     return (
-        <div className='flex flex-1 flex-col justify-between px-8 py-4'>
+        <div className='flex flex-1 flex-col px-8 py-4'>
+            <div className='flex justify-between items-center'>
+                <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                    <span className='text-2xl'>Back to Events</span>
+                </NavLink>
+                <SearchInput />
+                <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
+                    <Await resolve={event}>
+                        {(event) => <span className='font-bold text-2xl'>{event.title} Participants</span>}
+                    </Await>
+                </Suspense>
+            </div>
             <AnimatedLayout>
-                <div className='flex justify-between items-center'>
-                    <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
-                        <FontAwesomeIcon icon={faChevronLeft} />
-                        <span className='text-2xl'>Back to Events</span>
-                    </NavLink>
-                    <SearchInput />
-                    <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
-                        <Await resolve={event}>
-                            {(event) => <span className='font-bold text-2xl'>{event.title} Participants</span>}
-                        </Await>
-                    </Suspense>
-                </div>
                 <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
                     <Await resolve={participants}>
                         {(loadedParticipants) => <UsersList users={loadedParticipants} />}
@@ -43,8 +43,9 @@ function EventPage() {
 
 export default EventPage
 
-async function loadParticipants(id) {
-    const response = await fetch(`http://localhost:5000/events/${id}/participants`);
+async function loadParticipants(id, search) {
+    console.log(`http://localhost:5000/events/${id}/participants?search=${search}`);
+    const response = await fetch(`http://localhost:5000/events/${id}/participants?search=${search}`);
 
     if (!response.ok) {
         throw json(
@@ -78,10 +79,12 @@ async function loadEvent(id) {
 }
 
 export async function loader({ request, params }) {
+    const url = new URL(request.url);
     const id = params.id;
+    const search = url.searchParams.get("search") || "";
 
     return defer({
         event: await loadEvent(id),
-        participants: await loadParticipants(id),
+        participants: await loadParticipants(id, search),
     });
 }

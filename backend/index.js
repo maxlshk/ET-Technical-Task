@@ -3,7 +3,6 @@ import { PORT, MONGO_URL } from "./config.js";
 import mongoose from "mongoose";
 import cors from 'cors';
 import eventsRoute from "./routes/eventRoute.js";
-import usersRoute from "./routes/userRoute.js";
 
 const app = express();
 
@@ -24,7 +23,6 @@ app.get("/", (req, res) => {
 });
 
 app.use('/events', eventsRoute);
-app.use('/users', usersRoute);
 
 mongoose.connect(MONGO_URL)
     .then(() => {

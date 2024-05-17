@@ -22,9 +22,11 @@ function EventsList({ events }) {
                     to={event._id}
                     title={event.title}
                     date={formatDate(event.date)}
+                    organizer={event.organizer}
                     description={event.description}
                 />
             ))}
+            {events.length === 0 && <p className='text-2xl text-center'>No events found</p>}
         </div>
     );
 }
