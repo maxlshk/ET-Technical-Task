@@ -7,6 +7,15 @@ const router = express.Router();
 const schema = Event.schema.obj;
 
 const sources = ['Social Media', 'Friends', 'Found Myself'];
+function getRandomFutureDate() {
+    const today = new Date();
+    const nextYear = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate());
+
+    const diffTime = nextYear.getTime() - today.getTime() + 1;
+    const randomTime = today.getTime() + Math.random() * diffTime;
+
+    return new Date(randomTime);
+}
 
 router.post('/createevents', async (request, response) => {
 
@@ -25,7 +34,7 @@ router.post('/createevents', async (request, response) => {
             return Event.create({
                 title: `Event ${i + 1}`,
                 description: `Description of Event ${i + 1} Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum vel consequuntur animi impedit possimus temporibus provident est in dolorum doloremque dolore reprehenderit ipsa voluptate laborum voluptas suscipit sit iste fuga quaerat, voluptates inventore perferendis. Sunt distinctio perferendis unde. Qui obcaecati saepe deleniti itaque, ex corporis et quos, nulla vitae corrupti?`,
-                date: new Date(),
+                date: getRandomFutureDate(),
                 organizer: userIds[i],
                 participants: userIds.slice((i + 1) * 10, (i + 2) * 10)
             });
@@ -79,11 +88,20 @@ router.get('/', async (request, response) => {
     const page = request.query.page || 1;
     const eventsPerPage = 8;
 
+    const sortField = request.query.sort || 'title';
+    const sortOrder = request.query.order === 'desc' ? -1 : 1;
+
     try {
         const skip = (page - 1) * eventsPerPage;
 
+        const sortOptions = {};
+        sortOptions[sortField] = sortOrder;
+
         const [events, totalEvents] = await Promise.all([
-            Event.find({}).skip(skip).limit(eventsPerPage),
+            Event.find({})
+                .sort(sortOptions)
+                .skip(skip)
+                .limit(eventsPerPage),
             Event.countDocuments({})
         ]);
 

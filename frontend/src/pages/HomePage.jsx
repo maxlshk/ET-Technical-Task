@@ -5,7 +5,14 @@ import { json, defer, Await } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import EventsList from '../components/EventsList';
 import AnimatedLayout from './AnimatedLayout';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 
+const options = [
+    'Title',
+    'Date',
+    'Organizer',
+]
 function HomePage() {
     const { events } = useLoaderData();
     const navigate = useNavigate();
@@ -13,22 +20,34 @@ function HomePage() {
 
     const query = new URLSearchParams(location.search);
     const currentPage = parseInt(query.get("page") || "1", 10);
+    const currentSort = query.get("sort") || "title";
+    const currentOrder = query.get("order") || "asc";
 
     const [page, setPage] = useState(currentPage);
-
-    useEffect(() => {
-        setPage(currentPage);
-    }, [currentPage]);
+    const [sort, setSort] = useState(currentSort);
 
     const handlePageChange = (event, value) => {
         setPage(value);
-        navigate(`/?page=${value}`);
+        navigate(`/?sort=${currentSort}&order=${currentOrder}&page=${value}`);
     };
+
+    const onSort = (option) => {
+        const sort = option.value.toLowerCase();
+        setSort(sort);
+        navigate(`/?sort=${sort}&order=${currentOrder}&page=${page}`);
+    }
 
     return (
 
-        <div className='flex flex-1 flex-col justify-between p-8'>
-            <div className='flex font-bold text-3xl'>Events</div>
+        <div className='flex flex-1 flex-col justify-between px-8 py-4'>
+            <div className='flex justify-between items-center'>
+                <span className='font-bold text-3xl'>Events</span>
+                <Dropdown
+                    options={options}
+                    onChange={onSort}
+                    value={`Sort by ${sort}`}
+                />
+            </div>
             <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
                 <Await resolve={events}>
                     {(loadedEvents) => (
@@ -54,8 +73,8 @@ function HomePage() {
 export default HomePage;
 
 
-async function loadEvents(page = 1) {
-    const response = await fetch(`http://localhost:5000/events?page=${page}`);
+async function loadEvents(sort = 'title', order = 'asc', page = 1) {
+    const response = await fetch(`http://localhost:5000/events?sort=${sort}&order=${order}&page=${page}`);
 
     if (!response.ok) {
         throw json(
@@ -73,8 +92,10 @@ async function loadEvents(page = 1) {
 
 export function loader({ request }) {
     const url = new URL(request.url);
+    const sortBy = url.searchParams.get("sort") || "title";
+    const sortOrder = url.searchParams.get("order") || "asc";
     const page = parseInt(url.searchParams.get("page") || "1", 10);
     return defer({
-        events: loadEvents(page),
+        events: loadEvents(sortBy, sortOrder, page),
     });
 }

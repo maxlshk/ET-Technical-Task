@@ -11,21 +11,23 @@ import { Suspense } from 'react'
 import UsersList from '../components/UsersList'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import SearchInput from '../components/SearchInput'
 
 function EventPage() {
     const { event, participants } = useLoaderData();
 
     return (
-        <div className='flex flex-1 flex-col justify-between p-8'>
+        <div className='flex flex-1 flex-col justify-between px-8 py-4'>
             <AnimatedLayout>
-                <div className='flex justify-between'>
+                <div className='flex justify-between items-center'>
                     <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
                         <FontAwesomeIcon icon={faChevronLeft} />
                         <span className='text-2xl'>Back to Events</span>
                     </NavLink>
+                    <SearchInput />
                     <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
                         <Await resolve={event}>
-                            {(event) => <span className='font-bold text-3xl'>{event.title} Participants</span>}
+                            {(event) => <span className='font-bold text-2xl'>{event.title} Participants</span>}
                         </Await>
                     </Suspense>
                 </div>

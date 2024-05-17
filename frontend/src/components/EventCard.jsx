@@ -3,12 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
 import { NavLink } from 'react-router-dom'
 
-function EventCard({ to, title, description }) {
+function EventCard({ to, title, date, description }) {
     return (
         <div className="flex flex-col max-w-sm p-6 bg-gray-100/70 backdrop-blur-md border border-gray-200 rounded-lg shadow">
             <NavLink to={to}>
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                    {title}
+                <h5 className="flex justify-between items-end mb-2">
+                    <span className='text-2xl font-bold tracking-tight text-gray-900'>{title}</span>
+                    <span className='text-base text-gray-700'>{date}</span>
                 </h5>
             </NavLink>
             <p className="mb-3 font-normal text-gray-700 max-h-32 overflow-y-auto custom-scrollbar">
