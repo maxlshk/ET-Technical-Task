@@ -12,6 +12,8 @@ const options = {
 }
 
 function Registration() {
+    const data = useActionData();
+    console.log(data)
     const [show, setShow] = useState(false)
     const [dateError, setDateError] = useState('')
     const handleChange = (selectedDate) => {
@@ -36,9 +38,12 @@ function Registration() {
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                                Register htmlFor an Event
+                                Register for an Event
                             </h1>
                             <Form method='post' className="space-y-4 md:space-y-6" autoComplete='off'>
+                                {data && data.message && (
+                                    <div className='text-red-600'>{data.message}...</div>
+                                )}
                                 <div>
                                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
                                     <input type="text" name="name" id="name" placeholder="Max Loshak" minLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required />
@@ -114,7 +119,7 @@ export async function action({ request, params }) {
         body: JSON.stringify(authData),
     });
 
-    if (responseCreateUser.status === 422 || responseCreateUser.status === 401) {
+    if (responseCreateUser.status === 422 || responseCreateUser.status === 400) {
         return responseCreateUser;
     }
 

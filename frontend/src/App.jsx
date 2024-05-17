@@ -1,10 +1,11 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import RootLayout from './pages/RootLayout';
 import ErrorPage from './pages/ErrorPage';
-import HomePage, { loader as eventsLoader } from './pages/HomePage';
-import EventPage, { loader as participantsLoader } from './pages/EventPage';
-import Registration, { action as registerAction } from './pages/Registration';
 
+const HomePage = lazy(() => import('./pages/HomePage'));
+const EventPage = lazy(() => import('./pages/EventPage'));
+const Registration = lazy(() => import('./pages/Registration'));
 
 function App() {
   const router = createBrowserRouter([
@@ -16,23 +17,25 @@ function App() {
       children: [
         {
           index: true,
-          element: <HomePage />,
-          loader: eventsLoader,
+          element: <Suspense fallback={<p>Loading...</p>}><HomePage /></Suspense>,
+          loader: (meta) =>
+            import('./pages/HomePage').then((module) => module.loader(meta)),
         },
         {
           path: ':id',
-          // action: profileAction,
           children: [
             {
               index: true,
-              element: <EventPage />,
+              element: <Suspense fallback={<p>Loading...</p>}><EventPage /></Suspense>,
               id: 'event-detail',
-              loader: participantsLoader,
+              loader: (meta) =>
+                import('./pages/EventPage').then((module) => module.loader(meta)),
             },
             {
               path: 'registration',
-              element: <Registration />,
-              action: registerAction,
+              element: <Suspense fallback={<p>Loading...</p>}><Registration /></Suspense>,
+              action: (meta) =>
+                import('./pages/Registration').then((module) => module.action(meta)),
             }
           ]
         },
