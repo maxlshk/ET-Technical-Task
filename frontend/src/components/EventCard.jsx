@@ -17,15 +17,15 @@ function EventCard({ to, title, description }) {
             <div className='flex justify-between mt-auto'>
                 <NavLink
                     to={`${to}/registration`}
-                    className="inline-flex gap-x-4 items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg
-                hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+                    className="inline-flex gap-x-4 items-center px-3 py-2 text-sm font-medium text-center text-white bg-cyan-600 rounded-lg
+                hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cayan-300">
                     Register
                     <FontAwesomeIcon icon={faRightToBracket} />
                 </NavLink>
                 <NavLink
                     to={to}
-                    className="inline-flex gap-x-4 items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg
-                hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+                    className="inline-flex gap-x-4 items-center px-3 py-2 text-sm font-medium text-center text-white bg-cyan-600 rounded-lg
+                hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cayan-300">
                     View
                     <FontAwesomeIcon icon={faEye} />
                 </NavLink>

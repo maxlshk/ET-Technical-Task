@@ -6,6 +6,41 @@ const router = express.Router();
 
 const schema = Event.schema.obj;
 
+const sources = ['Social Media', 'Friends', 'Found Myself'];
+
+router.post('/createevents', async (request, response) => {
+
+    const usersData = Array.from({ length: 880 }, (v, i) => ({
+        fullName: `User ${i + 1}`,
+        email: `user${i + 1}@gmail.com`,
+        dateOfBirth: new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
+        referralSource: sources[i % 3]
+    }));
+
+    try {
+        const createdUsers = await User.insertMany(usersData);
+        const userIds = createdUsers.map(user => user._id);
+
+        const eventPromises = Array.from({ length: 80 }, (v, i) => {
+            return Event.create({
+                title: `Event ${i + 1}`,
+                description: `Description of Event ${i + 1} Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum vel consequuntur animi impedit possimus temporibus provident est in dolorum doloremque dolore reprehenderit ipsa voluptate laborum voluptas suscipit sit iste fuga quaerat, voluptates inventore perferendis. Sunt distinctio perferendis unde. Qui obcaecati saepe deleniti itaque, ex corporis et quos, nulla vitae corrupti?`,
+                date: new Date(),
+                organizer: userIds[i],
+                participants: userIds.slice((i + 1) * 10, (i + 2) * 10)
+            });
+        });
+
+        await Promise.all(eventPromises);
+
+        return response.status(201).send({ message: 'Events created' });
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
 // Create Event
 router.post('/', async (request, response) => {
     try {
@@ -40,11 +75,23 @@ router.post('/', async (request, response) => {
 
 // Get All Events
 router.get('/', async (request, response) => {
+
+    const page = request.query.page || 1;
+    const eventsPerPage = 8;
+
     try {
-        const events = await Event.find({});
+        const skip = (page - 1) * eventsPerPage;
+
+        const [events, totalEvents] = await Promise.all([
+            Event.find({}).skip(skip).limit(eventsPerPage),
+            Event.countDocuments({})
+        ]);
 
         return response.status(200).json({
-            count: events.length,
+            totalPages: Math.ceil(totalEvents / eventsPerPage),
+            currentPage: page,
+            eventsPerPage: eventsPerPage,
+            totalEvents: totalEvents,
             data: events,
         });
     } catch (error) {

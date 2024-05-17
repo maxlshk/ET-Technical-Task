@@ -5,27 +5,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import Datepicker from "tailwind-datepicker-react"
-import { useNavigation } from 'react-router-dom'
 
 const options = {
     inputNameProp: 'birthday',
+    defaultDate: new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate()),
 }
 
 function Registration() {
-    const data = useActionData();
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === 'submitting';
-
     const [show, setShow] = useState(false)
+    const [dateError, setDateError] = useState('')
     const handleChange = (selectedDate) => {
-        console.log(selectedDate)
+        if (selectedDate > new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate())) {
+            setDateError('You must be at least 18 years old to register for an event.')
+        } else {
+            setDateError('')
+        }
     }
     const handleClose = (state) => {
         setShow(state)
     }
     return (
-        <AnimatedLayout>
-            <section className='flex flex-1 p-8 flex-col'>
+        <section className='flex flex-1 p-8 flex-col'>
+            <AnimatedLayout>
                 <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
                     <FontAwesomeIcon icon={faChevronLeft} />
                     <span className='text-2xl'>Back to Events</span>
@@ -35,38 +36,53 @@ function Registration() {
                     <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-                                Register for an Event
+                                Register htmlFor an Event
                             </h1>
-                            <Form method='post' className="space-y-4 md:space-y-6" action="#">
+                            <Form method='post' className="space-y-4 md:space-y-6" autoComplete='off'>
                                 <div>
                                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
-                                    <input type="text" name="name" id="name" placeholder="Max Loshak" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" />
+                                    <input type="text" name="name" id="name" placeholder="Max Loshak" minLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                    <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name.surname@gamil.com" required="" />
+                                    <input type="email" name="email" id="email" minLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name.surname@gamil.com" required />
                                 </div>
 
                                 <div>
                                     <label htmlFor="birthday" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your birth date</label>
                                     <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
+                                    {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
                                 </div>
 
-                                <div className="flex items-start">
-                                    <div className="flex items-center h-5">
-                                        <input id="terms" aria-describedby="terms" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="" />
-                                    </div>
-                                    <div className="ml-3 text-sm">
-                                        <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">I accept the <a className="font-medium text-primary-600 hover:underline dark:text-primary-500" href="#">Terms and Conditions</a></label>
+                                <div>
+                                    <label htmlFor="bordered-radio" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Where did you hear about this event?</label>
+                                    <div className="flex items-start justify-between gap-2">
+                                        <div className="flex items-center px-3 border border-gray-200 rounded dark:border-gray-700">
+                                            <input id="bordered-radio-1" type="radio" value="Social Media" name="bordered-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" />
+                                            <label htmlFor="bordered-radio-1" className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Social Media</label>
+                                        </div>
+                                        <div className="flex items-center px-3 border border-gray-200 rounded dark:border-gray-700">
+                                            <input id="bordered-radio-2" type="radio" value="Friends" name="bordered-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" />
+                                            <label htmlFor="bordered-radio-2" className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Friends</label>
+                                        </div>
+                                        <div className="flex items-center px-3 border border-gray-200 rounded dark:border-gray-700">
+                                            <input id="bordered-radio-3" type="radio" value="Found Myself" name="bordered-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" />
+                                            <label htmlFor="bordered-radio-3" className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Found Myself</label>
+                                        </div>
                                     </div>
                                 </div>
-                                <button className="w-full text-white bg-blue-700 hover:bg-blue-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Create an account</button>
+                                <button
+                                    disabled={dateError}
+                                    className="w-full text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:outline-none focus:ring-cayan-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Create an account
+                                </button>
                             </Form>
                         </div>
                     </div>
                 </div>
-            </section>
-        </AnimatedLayout>
+            </AnimatedLayout>
+        </section>
     )
 }
 
@@ -83,41 +99,46 @@ export async function action({ request, params }) {
         dateOfBirth: data.get('birthday'),
     };
 
+    const referralSource = data.get('bordered-radio');
+    if (referralSource) {
+        authData.referralSource = referralSource;
+    }
+
     console.log(authData);
 
-    const responseCreateUser = await fetch('http://localhost:5000/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(authData),
-    });
+    // const responseCreateUser = await fetch('http://localhost:5000/users', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(authData),
+    // });
 
-    if (responseCreateUser.status === 422 || responseCreateUser.status === 401) {
-        return responseCreateUser;
-    }
+    // if (responseCreateUser.status === 422 || responseCreateUser.status === 401) {
+    //     return responseCreateUser;
+    // }
 
-    if (!responseCreateUser.ok) {
-        throw json({ message: 'Could not register participant.' }, { status: 500 });
-    }
+    // if (!responseCreateUser.ok) {
+    //     throw json({ message: 'Could not register participant.' }, { status: 500 });
+    // }
 
-    const resData = await responseCreateUser.json();
-    const userId = resData._id;
+    // const resData = await responseCreateUser.json();
+    // const userId = resData._id;
 
-    const responseAddParticipant = await fetch(`http://localhost:5000/events/${params.id}/participants/${userId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    // const responseAddParticipant = await fetch(`http://localhost:5000/events/${params.id}/participants/${userId}`, {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     },
+    // });
 
-    if (responseAddParticipant.status === 422 || responseAddParticipant.status === 401) {
-        return responseAddParticipant;
-    }
+    // if (responseAddParticipant.status === 422 || responseAddParticipant.status === 401) {
+    //     return responseAddParticipant;
+    // }
 
-    if (!responseAddParticipant.ok) {
-        throw json({ message: 'Could not add participant to event.' }, { status: 500 });
-    }
+    // if (!responseAddParticipant.ok) {
+    //     throw json({ message: 'Could not add participant to event.' }, { status: 500 });
+    // }
 
     return redirect('/');
 }

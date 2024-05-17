@@ -1,7 +1,4 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faRightToBracket } from '@fortawesome/free-solid-svg-icons'
-import { NavLink } from 'react-router-dom'
 
 function UserCard({ name, email, organizer }) {
     return (

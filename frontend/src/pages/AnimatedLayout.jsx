@@ -25,7 +25,6 @@ const AnimatedLayout = ({ children }) => {
             animate="in"
             exit="out"
             transition={{ type: 'tween', duration: 0.3 }}
-            className='flex flex-col flex-1'
         >
             {children}
         </motion.div>

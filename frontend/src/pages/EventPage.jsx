@@ -3,7 +3,6 @@ import AnimatedLayout from './AnimatedLayout'
 import {
     useLoaderData,
     json,
-    redirect,
     defer,
     Await,
     NavLink,
@@ -17,8 +16,8 @@ function EventPage() {
     const { event, participants } = useLoaderData();
 
     return (
-        <AnimatedLayout>
-            <div className='p-8'>
+        <div className='flex flex-1 flex-col justify-between p-8'>
+            <AnimatedLayout>
                 <div className='flex justify-between'>
                     <NavLink to='/' className='inline-flex items-center gap-x-3 text-black'>
                         <FontAwesomeIcon icon={faChevronLeft} />
@@ -26,7 +25,7 @@ function EventPage() {
                     </NavLink>
                     <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
                         <Await resolve={event}>
-                            {(event) => <span className='font-bold text-3xl'>{event.title} Event Participants</span>}
+                            {(event) => <span className='font-bold text-3xl'>{event.title} Participants</span>}
                         </Await>
                     </Suspense>
                 </div>
@@ -35,8 +34,8 @@ function EventPage() {
                         {(loadedParticipants) => <UsersList users={loadedParticipants} />}
                     </Await>
                 </Suspense>
-            </div>
-        </AnimatedLayout>
+            </AnimatedLayout>
+        </div>
     )
 }
 
