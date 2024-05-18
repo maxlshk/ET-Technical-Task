@@ -35,9 +35,9 @@ function Registration() {
                 </NavLink>
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-full w-2/5 min-w-72">
 
-                    <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                                 Register for an Event
                             </h1>
                             <Form method='post' className="space-y-4 md:space-y-6" autoComplete='off'>
@@ -45,34 +45,34 @@ function Registration() {
                                     <div className='text-red-600'>{data.message}...</div>
                                 )}
                                 <div>
-                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your name</label>
+                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Your name</label>
                                     <input type="text" name="name" id="name" placeholder="Max Loshak" minLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required />
                                 </div>
                                 <div>
-                                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                                    <input type="email" name="email" id="email" minLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-cyan-500 dark:focus:border-cyan-500" placeholder="name.surname@gamil.com" required />
+                                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your email</label>
+                                    <input type="email" name="email" id="email" minLength={5} className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name.surname@gamil.com" required />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="birthday" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your birth date</label>
+                                    <label htmlFor="birthday" className="block mb-2 text-sm font-medium text-gray-900">Your birth date</label>
                                     <Datepicker options={options} onChange={handleChange} show={show} setShow={handleClose} />
                                     {dateError && <p className="text-red-500 text-xs mt-1">{dateError}</p>}
                                 </div>
 
                                 <div>
-                                    <label htmlFor="bordered-radio" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Where did you hear about this event?</label>
+                                    <label htmlFor="bordered-radio" className="block mb-2 text-sm font-medium text-gray-900">Where did you hear about this event?</label>
                                     <div className="flex items-start justify-between gap-2">
-                                        <div className="flex items-center px-3 border border-gray-200 rounded dark:border-gray-700">
+                                        <div className="flex items-center px-3 border border-gray-200 rounded">
                                             <input id="bordered-radio-1" type="radio" value="Social Media" name="bordered-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-cyan-500" />
-                                            <label htmlFor="bordered-radio-1" className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Social Media</label>
+                                            <label htmlFor="bordered-radio-1" className="w-full py-4 ms-2 text-sm font-medium text-gray-900">Social Media</label>
                                         </div>
-                                        <div className="flex items-center px-3 border border-gray-200 rounded dark:border-gray-700">
+                                        <div className="flex items-center px-3 border border-gray-200 rounded">
                                             <input id="bordered-radio-2" type="radio" value="Friends" name="bordered-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-cyan-500" />
-                                            <label htmlFor="bordered-radio-2" className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Friends</label>
+                                            <label htmlFor="bordered-radio-2" className="w-full py-4 ms-2 text-sm font-medium text-gray-900">Friends</label>
                                         </div>
-                                        <div className="flex items-center px-3 border border-gray-200 rounded dark:border-gray-700">
+                                        <div className="flex items-center px-3 border border-gray-200 rounded">
                                             <input id="bordered-radio-3" type="radio" value="Found Myself" name="bordered-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-cyan-500" />
-                                            <label htmlFor="bordered-radio-3" className="w-full py-4 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Found Myself</label>
+                                            <label htmlFor="bordered-radio-3" className="w-full py-4 ms-2 text-sm font-medium text-gray-900">Found Myself</label>
                                         </div>
                                     </div>
                                 </div>
