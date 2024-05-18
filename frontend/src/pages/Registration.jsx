@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import Datepicker from "tailwind-datepicker-react"
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const options = {
     inputNameProp: 'birthday',
@@ -111,7 +112,7 @@ export async function action({ request, params }) {
 
     console.log(authData);
 
-    const responseCreateUser = await fetch(`http://localhost:5000/events/${params.id}/participants`, {
+    const responseCreateUser = await fetch(`${API_BASE_URL}/events/${params.id}/participants`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

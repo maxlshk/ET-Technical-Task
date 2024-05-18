@@ -12,6 +12,8 @@ import UsersList from '../components/UsersList'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import SearchInput from '../components/SearchInput'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 function EventPage() {
     const { event, participants } = useLoaderData();
@@ -44,8 +46,7 @@ function EventPage() {
 export default EventPage
 
 async function loadParticipants(id, search) {
-    console.log(`http://localhost:5000/events/${id}/participants?search=${search}`);
-    const response = await fetch(`http://localhost:5000/events/${id}/participants?search=${search}`);
+    const response = await fetch(`${API_BASE_URL}/events/${id}/participants?search=${search}`);
 
     if (!response.ok) {
         throw json(
@@ -62,7 +63,7 @@ async function loadParticipants(id, search) {
 }
 
 async function loadEvent(id) {
-    const response = await fetch(`http://localhost:5000/events/${id}`);
+    const response = await fetch(`${API_BASE_URL}/events/${id}`);
 
     if (!response.ok) {
         throw json(

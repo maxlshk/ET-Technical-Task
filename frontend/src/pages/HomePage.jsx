@@ -7,6 +7,7 @@ import EventsList from '../components/EventsList';
 import AnimatedLayout from './AnimatedLayout';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const options = [
     'Title',
@@ -84,7 +85,7 @@ export default HomePage;
 
 
 async function loadEvents(sort = 'title', order = 'asc', page = 1) {
-    const response = await fetch(`http://localhost:5000/events?sort=${sort}&order=${order}&page=${page}`);
+    const response = await fetch(`${API_BASE_URL}/events?sort=${sort}&order=${order}&page=${page}`);
 
     if (!response.ok) {
         throw json(
