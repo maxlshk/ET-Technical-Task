@@ -7,7 +7,7 @@ import EventsList from '../components/EventsList';
 import AnimatedLayout from './AnimatedLayout';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const options = [
     'Title',
