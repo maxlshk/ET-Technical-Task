@@ -2,9 +2,11 @@
 
 Small web application based on the technical task for the ElifTech online school enrollment.
 
+Live Demo: [Event Organizer](https://et-technical-task-frontend.onrender.com/)
+
 ## Installation
 
-Use the package manager [npm](https://nodejs.org/en/download) to install dependencies ans start the app.
+Use the package manager [npm](https://nodejs.org/en/download) to install dependencies and start the app.
 
 ---
 
